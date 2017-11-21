@@ -1,0 +1,3712 @@
+1
+00:00:03,110 --> 00:00:04,400
+[Music]
+
+2
+00:00:04,400 --> 00:00:08,700
+good afternoon welcome to modules in one
+
+3
+00:00:08,700 --> 00:00:11,429
+lesson my name is mark Reinhold I work
+
+4
+00:00:11,429 --> 00:00:14,880
+on Java now and then so this is mostly
+
+5
+00:00:14,880 --> 00:00:16,379
+going to be an interactive talk the the
+
+6
+00:00:16,379 --> 00:00:18,480
+title modules in one lesson might lead
+
+7
+00:00:18,480 --> 00:00:19,590
+you to believe that I'm going to teach
+
+8
+00:00:19,590 --> 00:00:22,140
+you everything you possibly could could
+
+9
+00:00:22,140 --> 00:00:23,699
+know about modules everything there if
+
+10
+00:00:23,699 --> 00:00:25,949
+there is no but of course I can't so a
+
+11
+00:00:25,949 --> 00:00:28,080
+better title might actually be you know
+
+12
+00:00:28,080 --> 00:00:29,310
+modules the TLDR
+
+13
+00:00:29,310 --> 00:00:32,120
+modules skimming the surface modules
+
+14
+00:00:32,120 --> 00:00:34,350
+showing you a few a few cool things and
+
+15
+00:00:34,350 --> 00:00:36,989
+basically how it works so for reference
+
+16
+00:00:36,989 --> 00:00:38,790
+how many people were in Alex Buckley's
+
+17
+00:00:38,790 --> 00:00:41,090
+talk the session before the previous one
+
+18
+00:00:41,090 --> 00:00:42,239
+excellent
+
+19
+00:00:42,239 --> 00:00:43,860
+so you've you've already got the
+
+20
+00:00:43,860 --> 00:00:45,629
+terminology you've already got some of
+
+21
+00:00:45,629 --> 00:00:48,390
+the philosophy what I'm gonna do is show
+
+22
+00:00:48,390 --> 00:00:50,910
+you some of how how all this works in
+
+23
+00:00:50,910 --> 00:00:54,420
+practice so we'll explore a little bit
+
+24
+00:00:54,420 --> 00:00:57,410
+we'll see how modules are deeply wired
+
+25
+00:00:57,410 --> 00:01:00,750
+into the system at both compile-time and
+
+26
+00:01:00,750 --> 00:01:04,170
+run-time we'll look at the modular JDK
+
+27
+00:01:04,170 --> 00:01:07,200
+fairly briefly and then we'll demo
+
+28
+00:01:07,200 --> 00:01:09,659
+actually take a little a little trivial
+
+29
+00:01:09,659 --> 00:01:13,409
+hello world app convert it in a sort of
+
+30
+00:01:13,409 --> 00:01:14,909
+gratuitous way but it's good for a
+
+31
+00:01:14,909 --> 00:01:16,530
+little uh striated purposes we'll
+
+32
+00:01:16,530 --> 00:01:18,720
+convert that into two modules and see
+
+33
+00:01:18,720 --> 00:01:22,439
+how they interact and see how the strong
+
+34
+00:01:22,439 --> 00:01:24,540
+encapsulation and reliable configuration
+
+35
+00:01:24,540 --> 00:01:27,210
+that Alex spoke about actually shows up
+
+36
+00:01:27,210 --> 00:01:30,360
+in practice and and what is what is like
+
+37
+00:01:30,360 --> 00:01:35,070
+in in in reality so with that let me
+
+38
+00:01:35,070 --> 00:01:38,520
+switch over here oh and by the way I
+
+39
+00:01:38,520 --> 00:01:40,259
+probably will make a mistake or two this
+
+40
+00:01:40,259 --> 00:01:42,689
+is mostly gonna be live coding so if you
+
+41
+00:01:42,689 --> 00:01:44,549
+think you can help if you see me make a
+
+42
+00:01:44,549 --> 00:01:49,590
+mistake feel free to shout it out let's
+
+43
+00:01:49,590 --> 00:01:52,700
+say I'm here in my my handy command line
+
+44
+00:01:52,700 --> 00:01:59,070
+I've got a Java Runtime environment and
+
+45
+00:01:59,070 --> 00:02:00,780
+since I like living on the edge edge
+
+46
+00:02:00,780 --> 00:02:03,730
+this isn't 9
+
+47
+00:02:03,730 --> 00:02:06,250
+this is a 10 build that I made on this
+
+48
+00:02:06,250 --> 00:02:09,190
+machine a couple of days ago so it's
+
+49
+00:02:09,190 --> 00:02:11,800
+it's it's so it's a little bit past them
+
+50
+00:02:11,800 --> 00:02:13,960
+the most recent early access build that
+
+51
+00:02:13,960 --> 00:02:17,770
+was posted last week so you know
+
+52
+00:02:17,770 --> 00:02:19,510
+hopefully it'll all work I ran through
+
+53
+00:02:19,510 --> 00:02:22,060
+it earlier and it did but you never know
+
+54
+00:02:22,060 --> 00:02:26,650
+so this is a preview of 10 but of course
+
+55
+00:02:26,650 --> 00:02:29,680
+it's largely compatible with 9 so that's
+
+56
+00:02:29,680 --> 00:02:32,830
+not hopefully it just shouldn't be a
+
+57
+00:02:32,830 --> 00:02:36,550
+problem so first things first and also a
+
+58
+00:02:36,550 --> 00:02:37,960
+little side advertisement how many how
+
+59
+00:02:37,960 --> 00:02:40,690
+many people played with J shell isn't it
+
+60
+00:02:40,690 --> 00:02:41,670
+great
+
+61
+00:02:41,670 --> 00:02:44,050
+incredibly useful so we're gonna see
+
+62
+00:02:44,050 --> 00:02:47,200
+some some cool stuff here let me make a
+
+63
+00:02:47,200 --> 00:02:50,500
+string variable just a quickie
+
+64
+00:02:50,500 --> 00:02:52,420
+introduction to J shell for those of you
+
+65
+00:02:52,420 --> 00:02:54,760
+haven't haven't seen it I can type
+
+66
+00:02:54,760 --> 00:02:57,070
+expressions I can you know type in 2y
+
+67
+00:02:57,070 --> 00:03:02,680
+equals 4 plus 3y is now 7 so I've got
+
+68
+00:03:02,680 --> 00:03:05,410
+the string variable x foo bar Baz and I
+
+69
+00:03:05,410 --> 00:03:07,420
+can you know since it's a string y can
+
+70
+00:03:07,420 --> 00:03:08,860
+book methods on it right what methods
+
+71
+00:03:08,860 --> 00:03:11,290
+can I invoke well hit tab boom and it
+
+72
+00:03:11,290 --> 00:03:16,630
+tells you is we can find out how long it
+
+73
+00:03:16,630 --> 00:03:20,140
+is we can take a substring for
+
+74
+00:03:20,140 --> 00:03:24,090
+subsequence take your pick
+
+75
+00:03:24,090 --> 00:03:32,140
+we can do a mattres operation on it and
+
+76
+00:03:32,140 --> 00:03:34,209
+that will be false because its matches
+
+77
+00:03:34,209 --> 00:03:36,760
+not find anyway you get the idea so you
+
+78
+00:03:36,760 --> 00:03:38,800
+can you can type contect little snippets
+
+79
+00:03:38,800 --> 00:03:40,959
+of java code in there evaluated right
+
+80
+00:03:40,959 --> 00:03:43,360
+right away in a sort of implicit
+
+81
+00:03:43,360 --> 00:03:45,580
+environment that logically includes a
+
+82
+00:03:45,580 --> 00:03:48,750
+class but but that's all implicit as
+
+83
+00:03:48,750 --> 00:03:54,250
+order ste might say the coolest so you
+
+84
+00:03:54,250 --> 00:03:55,690
+can explore it pretty much anything so
+
+85
+00:03:55,690 --> 00:03:58,720
+we've got this string object what what
+
+86
+00:03:58,720 --> 00:04:01,930
+is its class well it's a string duh we
+
+87
+00:04:01,930 --> 00:04:03,970
+knew that ok new thing as of Java ma
+
+88
+00:04:03,970 --> 00:04:09,010
+Java 9 every class has a module it's in
+
+89
+00:04:09,010 --> 00:04:13,239
+a module so we asked what module is the
+
+90
+00:04:13,239 --> 00:04:14,950
+string class in it's in the Java base
+
+91
+00:04:14,950 --> 00:04:16,810
+module and if you saw Alex is talking to
+
+92
+00:04:16,810 --> 00:04:17,370
+the Java Bay
+
+93
+00:04:17,370 --> 00:04:19,109
+module is the one module that you always
+
+94
+00:04:19,109 --> 00:04:20,910
+have around because it's got coupling
+
+95
+00:04:20,910 --> 00:04:22,500
+string and job line object and all those
+
+96
+00:04:22,500 --> 00:04:26,070
+essentials of life inside it what is
+
+97
+00:04:26,070 --> 00:04:28,680
+they so get module return something
+
+98
+00:04:28,680 --> 00:04:32,300
+right what would actually did it return
+
+99
+00:04:32,300 --> 00:04:35,340
+let's find out it returned me an
+
+100
+00:04:35,340 --> 00:04:37,800
+instance of a new class of java.lang
+
+101
+00:04:37,800 --> 00:04:42,300
+module which is the runtime reflection
+
+102
+00:04:42,300 --> 00:04:46,020
+of the module object as instantiated in
+
+103
+00:04:46,020 --> 00:04:50,370
+the VM so modules are are deeply deeply
+
+104
+00:04:50,370 --> 00:04:51,750
+wired in not everything is in the base
+
+105
+00:04:51,750 --> 00:04:56,720
+module of course we can do for example
+
+106
+00:04:56,720 --> 00:05:06,389
+timestamp over in the sequel package and
+
+107
+00:05:06,389 --> 00:05:07,830
+then a dollar 11 there is just a
+
+108
+00:05:07,830 --> 00:05:10,020
+shorthand for the timestamp I just
+
+109
+00:05:10,020 --> 00:05:12,240
+created I can ask what's it put as its
+
+110
+00:05:12,240 --> 00:05:14,220
+class which we know what that is it's
+
+111
+00:05:14,220 --> 00:05:16,740
+timestamp we just made it I can ask what
+
+112
+00:05:16,740 --> 00:05:19,680
+module it's in and I see that it's in
+
+113
+00:05:19,680 --> 00:05:21,450
+the module called Rama that's equal and
+
+114
+00:05:21,450 --> 00:05:23,340
+we'll come back and and play with this a
+
+115
+00:05:23,340 --> 00:05:25,220
+little more later on
+
+116
+00:05:25,220 --> 00:05:29,099
+okay so modules are deeply wired in that
+
+117
+00:05:29,099 --> 00:05:31,530
+this is this is just run time the same
+
+118
+00:05:31,530 --> 00:05:33,560
+is true at compile time as we'll see
+
+119
+00:05:33,560 --> 00:05:37,229
+let's take a look at the jdk module
+
+120
+00:05:37,229 --> 00:05:41,070
+graph itself and i'll show you the whole
+
+121
+00:05:41,070 --> 00:05:41,340
+thing
+
+122
+00:05:41,340 --> 00:05:45,870
+Oh Alex you should mainly show just the
+
+123
+00:05:45,870 --> 00:05:48,840
+just the Java SE part of it so there are
+
+124
+00:05:48,840 --> 00:05:51,300
+some edges missing here so Java bases at
+
+125
+00:05:51,300 --> 00:05:53,340
+the bottom you always get Java base
+
+126
+00:05:53,340 --> 00:05:55,560
+whether you want it or not you you can
+
+127
+00:05:55,560 --> 00:05:57,570
+say you can when you write a module you
+
+128
+00:05:57,570 --> 00:05:59,220
+can save that it requires Java dot base
+
+129
+00:05:59,220 --> 00:06:00,660
+but if you don't the compiler will
+
+130
+00:06:00,660 --> 00:06:03,479
+insert that for you so imagine if you
+
+131
+00:06:03,479 --> 00:06:05,340
+like if you want even if you want to
+
+132
+00:06:05,340 --> 00:06:07,020
+imagine this graph as complete there is
+
+133
+00:06:07,020 --> 00:06:11,280
+an edge from every node that isn't Java
+
+134
+00:06:11,280 --> 00:06:14,099
+based to Java dot base but I didn't show
+
+135
+00:06:14,099 --> 00:06:15,330
+that here because then it would be
+
+136
+00:06:15,330 --> 00:06:18,389
+unreadable and then the blue edges show
+
+137
+00:06:18,389 --> 00:06:20,720
+the show the transit a reduction of
+
+138
+00:06:20,720 --> 00:06:23,130
+everything else that's left including
+
+139
+00:06:23,130 --> 00:06:25,289
+the the Java sequel module that we just
+
+140
+00:06:25,289 --> 00:06:26,880
+saw up there and you see Java sequel we
+
+141
+00:06:26,880 --> 00:06:28,229
+have this shows all the real all the
+
+142
+00:06:28,229 --> 00:06:30,840
+requires relationships which modules the
+
+143
+00:06:30,840 --> 00:06:33,270
+and upon others what do you notice about
+
+144
+00:06:33,270 --> 00:06:35,639
+this graph even if you mentally insert
+
+145
+00:06:35,639 --> 00:06:37,470
+all the missing edges to Java dot base
+
+146
+00:06:37,470 --> 00:06:43,130
+it has an important property what is it
+
+147
+00:06:43,130 --> 00:06:49,020
+no cycles exactly cycles are cycles
+
+148
+00:06:49,020 --> 00:06:52,260
+spell doom in a modular system so there
+
+149
+00:06:52,260 --> 00:06:53,729
+are no cycles here and in fact the
+
+150
+00:06:53,729 --> 00:06:58,620
+module system does not allow cycles so
+
+151
+00:06:58,620 --> 00:07:00,240
+let's take a look at the modules that
+
+152
+00:07:00,240 --> 00:07:04,500
+we've got new options to the Java
+
+153
+00:07:04,500 --> 00:07:06,450
+launcher it will list all the modules
+
+154
+00:07:06,450 --> 00:07:08,550
+that it knows about and there are a lot
+
+155
+00:07:08,550 --> 00:07:12,150
+of them in fact there are 75 in an open
+
+156
+00:07:12,150 --> 00:07:22,669
+JDK build let's explore those a little
+
+157
+00:07:22,669 --> 00:07:25,080
+so we've got a whole bunch a whole bunch
+
+158
+00:07:25,080 --> 00:07:26,639
+of modules let's start with the letters
+
+159
+00:07:26,639 --> 00:07:29,550
+JAV a those are part of the Java SE
+
+160
+00:07:29,550 --> 00:07:31,949
+standard as of 9 and then there are
+
+161
+00:07:31,949 --> 00:07:34,080
+modules that start with the letters jdk
+
+162
+00:07:34,080 --> 00:07:38,340
+those are specific to the jdk and the
+
+163
+00:07:38,340 --> 00:07:40,289
+implementation of Java SE there are many
+
+164
+00:07:40,289 --> 00:07:42,810
+things marked internal there are some
+
+165
+00:07:42,810 --> 00:07:44,010
+things that are not marked in journal
+
+166
+00:07:44,010 --> 00:07:45,900
+because they're actually api's that you
+
+167
+00:07:45,900 --> 00:07:47,280
+can use they're just not part of the
+
+168
+00:07:47,280 --> 00:07:52,349
+Java SE standard so not only is is the
+
+169
+00:07:52,349 --> 00:07:55,080
+is the platform modular but we also made
+
+170
+00:07:55,080 --> 00:07:58,440
+the Java doc modular here's the Java doc
+
+171
+00:07:58,440 --> 00:08:02,370
+for 9 API specification divided into 3
+
+172
+00:08:02,370 --> 00:08:06,120
+sections and the this is the front page
+
+173
+00:08:06,120 --> 00:08:07,950
+you're used to seeing this huge long
+
+174
+00:08:07,950 --> 00:08:10,380
+list of packages well now what you get
+
+175
+00:08:10,380 --> 00:08:13,770
+is a shorter list of modules here all
+
+176
+00:08:13,770 --> 00:08:15,900
+the Java SE modules so you drop it base
+
+177
+00:08:15,900 --> 00:08:18,690
+there scroll down modules that are
+
+178
+00:08:18,690 --> 00:08:22,020
+specific to the JDK excluding ones that
+
+179
+00:08:22,020 --> 00:08:24,810
+are strictly internal because you don't
+
+180
+00:08:24,810 --> 00:08:27,240
+need to know about those Java FX modules
+
+181
+00:08:27,240 --> 00:08:30,900
+and other models and we go in here we if
+
+182
+00:08:30,900 --> 00:08:33,539
+we go into Java base then we'll see the
+
+183
+00:08:33,539 --> 00:08:36,240
+actual list of packages inside it
+
+184
+00:08:36,240 --> 00:08:38,520
+including java.lang there's are familiar
+
+185
+00:08:38,520 --> 00:08:40,969
+java.lang package and
+
+186
+00:08:40,969 --> 00:08:43,430
+good ependymal cloneable or without all
+
+187
+00:08:43,430 --> 00:08:46,129
+of those essential things java.lang
+
+188
+00:08:46,129 --> 00:08:48,139
+object yes we still have java.lang
+
+189
+00:08:48,139 --> 00:08:50,810
+object let me go back up to the top here
+
+190
+00:08:50,810 --> 00:08:56,420
+and let's look at the sequel module that
+
+191
+00:08:56,420 --> 00:09:01,699
+we saw a moment ago so the sequel module
+
+192
+00:09:01,699 --> 00:09:03,829
+as we saw in the module graph depends on
+
+193
+00:09:03,829 --> 00:09:05,569
+some other modules and if you hover over
+
+194
+00:09:05,569 --> 00:09:07,370
+this little picture here you'll get a
+
+195
+00:09:07,370 --> 00:09:09,230
+bigger version of it and this this
+
+196
+00:09:09,230 --> 00:09:11,240
+little graph is actually is generated in
+
+197
+00:09:11,240 --> 00:09:12,829
+the JDK build it's all automatic
+
+198
+00:09:12,829 --> 00:09:14,540
+generates a dot file that's then
+
+199
+00:09:14,540 --> 00:09:15,980
+rendered into a pane that winds up in
+
+200
+00:09:15,980 --> 00:09:18,740
+the Javadoc the Javadoc that you can
+
+201
+00:09:18,740 --> 00:09:22,490
+browse so the platform is modular the
+
+202
+00:09:22,490 --> 00:09:28,819
+travedoc is modular all right now going
+
+203
+00:09:28,819 --> 00:09:33,769
+back here we did all this deep surgery
+
+204
+00:09:33,769 --> 00:09:35,300
+on the platform to modularize the
+
+205
+00:09:35,300 --> 00:09:37,610
+spaghetti code that the you know the jdk
+
+206
+00:09:37,610 --> 00:09:42,740
+had become over 20 odd years we took
+
+207
+00:09:42,740 --> 00:09:44,420
+great pains as I mentioned this morning
+
+208
+00:09:44,420 --> 00:09:46,250
+to to make it as compatible as we
+
+209
+00:09:46,250 --> 00:09:48,050
+possibly could as a demonstration of
+
+210
+00:09:48,050 --> 00:09:54,860
+that I have here swing set to jar
+
+211
+00:09:54,860 --> 00:09:58,009
+anybody remember swing set goes way back
+
+212
+00:09:58,009 --> 00:10:01,790
+to JDK 1.2 1998 it was that it was the
+
+213
+00:10:01,790 --> 00:10:04,370
+demo of the new swing GUI toolkit this
+
+214
+00:10:04,370 --> 00:10:08,300
+is the swing set to the jar file as
+
+215
+00:10:08,300 --> 00:10:12,290
+found exactly in JDK 5 and I'm happy to
+
+216
+00:10:12,290 --> 00:10:20,180
+report actually Java dash jar I'm gonna
+
+217
+00:10:20,180 --> 00:10:21,980
+run it and the rumor this is with my
+
+218
+00:10:21,980 --> 00:10:26,809
+experimental 10 early access build same
+
+219
+00:10:26,809 --> 00:10:29,360
+is true on 9 obviously and it runs very
+
+220
+00:10:29,360 --> 00:10:33,709
+swingset yay what stuff still works
+
+221
+00:10:33,709 --> 00:10:38,199
+this kids you know in grad school now
+
+222
+00:10:38,199 --> 00:10:41,569
+whatever so yeah the platform's modular
+
+223
+00:10:41,569 --> 00:10:44,930
+but it's also pretty darn compatible all
+
+224
+00:10:44,930 --> 00:10:47,870
+right let's let's look at some code so
+
+225
+00:10:47,870 --> 00:10:51,829
+I've written a really trivial HelloWorld
+
+226
+00:10:51,829 --> 00:10:54,670
+application not the most trivial
+
+227
+00:10:54,670 --> 00:10:57,610
+one but a pretty trivial one so we'll go
+
+228
+00:10:57,610 --> 00:11:01,050
+into my favorite IDE here namely Emacs
+
+229
+00:11:01,050 --> 00:11:08,670
+and here's hello world in one screen
+
+230
+00:11:08,670 --> 00:11:12,250
+public static void main looks at the
+
+231
+00:11:12,250 --> 00:11:18,880
+args and then left as the args so that
+
+232
+00:11:18,880 --> 00:11:20,620
+the of the actual hello world will show
+
+233
+00:11:20,620 --> 00:11:21,940
+up on the right-hand side of the screen
+
+234
+00:11:21,940 --> 00:11:23,800
+with this really sophisticated method
+
+235
+00:11:23,800 --> 00:11:26,530
+here called left pad logically enough
+
+236
+00:11:26,530 --> 00:11:29,620
+that just does the obvious iterative
+
+237
+00:11:29,620 --> 00:11:34,900
+thing all right let's compile this and
+
+238
+00:11:34,900 --> 00:11:37,510
+just show that yep you can you can do
+
+239
+00:11:37,510 --> 00:11:39,250
+all this standard stuff the classpath it
+
+240
+00:11:39,250 --> 00:11:40,840
+still exists we didn't take it away
+
+241
+00:11:40,840 --> 00:11:43,660
+contrary to rumor last path is still
+
+242
+00:11:43,660 --> 00:11:48,460
+there in 9 and in 10 let's see
+
+243
+00:11:48,460 --> 00:11:54,670
+I was seed classes tab completion is
+
+244
+00:11:54,670 --> 00:12:13,690
+wonderful I'll make myself a jar file
+
+245
+00:12:13,690 --> 00:12:26,530
+like I said I would make mistakes
+
+246
+00:12:26,530 --> 00:12:29,270
+let's see Chile world it's chilly in
+
+247
+00:12:29,270 --> 00:12:29,750
+here
+
+248
+00:12:29,750 --> 00:12:35,870
+hello Chile world ok isn't that
+
+249
+00:12:35,870 --> 00:12:38,390
+sophisticated I got a PhD and I'm doing
+
+250
+00:12:38,390 --> 00:12:41,510
+this whatever ok so we can route we made
+
+251
+00:12:41,510 --> 00:12:43,220
+a jar file we ran on the classpath all
+
+252
+00:12:43,220 --> 00:12:45,020
+the obvious stuff so first step is we'll
+
+253
+00:12:45,020 --> 00:12:47,840
+take this trivial application and since
+
+254
+00:12:47,840 --> 00:12:50,450
+it's it obviously needs to be reusable
+
+255
+00:12:50,450 --> 00:12:52,730
+right we'll make it into a module well
+
+256
+00:12:52,730 --> 00:12:58,520
+that's actually pretty easy so we pop up
+
+257
+00:12:58,520 --> 00:13:00,500
+a couple levels of directory here we're
+
+258
+00:13:00,500 --> 00:13:02,600
+down in source org open JDK hello
+
+259
+00:13:02,600 --> 00:13:04,640
+because I'm using the root the reverse
+
+260
+00:13:04,640 --> 00:13:08,000
+DNS convention I'll pop up the module
+
+261
+00:13:08,000 --> 00:13:12,080
+declarations go in the root so they go
+
+262
+00:13:12,080 --> 00:13:13,820
+in the source directory itself they're
+
+263
+00:13:13,820 --> 00:13:16,370
+always by convention in a file called
+
+264
+00:13:16,370 --> 00:13:22,100
+module info top Java I say module walked
+
+265
+00:13:22,100 --> 00:13:23,600
+me I'm gonna call this module the same
+
+266
+00:13:23,600 --> 00:13:29,660
+name as the package and module names by
+
+267
+00:13:29,660 --> 00:13:31,580
+convention should also follow the rivers
+
+268
+00:13:31,580 --> 00:13:37,400
+DNS reverse DNS a convention otherwise
+
+269
+00:13:37,400 --> 00:13:39,350
+you know chaos will ensue
+
+270
+00:13:39,350 --> 00:13:43,040
+now modules if you heard Alex's talk
+
+271
+00:13:43,040 --> 00:13:44,780
+modules are a module as a set of
+
+272
+00:13:44,780 --> 00:13:47,000
+packages designed for reuse this is a
+
+273
+00:13:47,000 --> 00:13:48,620
+little application is it designed for
+
+274
+00:13:48,620 --> 00:13:50,960
+reuse well no not in its life as a
+
+275
+00:13:50,960 --> 00:13:53,240
+module so in fact it's not gonna export
+
+276
+00:13:53,240 --> 00:13:54,890
+anything it's you know yes it's got a
+
+277
+00:13:54,890 --> 00:13:56,960
+package but there's no API here so we
+
+278
+00:13:56,960 --> 00:13:58,550
+don't have to say anything I could say
+
+279
+00:13:58,550 --> 00:14:01,880
+requires Java dot base if I wanted to
+
+280
+00:14:01,880 --> 00:14:04,640
+but that's tedious and the compiler
+
+281
+00:14:04,640 --> 00:14:06,290
+inserts is for me so I just finish it
+
+282
+00:14:06,290 --> 00:14:10,910
+off and I'm done so just to show you the
+
+283
+00:14:10,910 --> 00:14:14,390
+the logic of how how to how to compile a
+
+284
+00:14:14,390 --> 00:14:19,160
+module once you've got one you're just
+
+285
+00:14:19,160 --> 00:14:21,490
+dealing with a single module it's it's
+
+286
+00:14:21,490 --> 00:14:24,020
+not hard you can you can compile all of
+
+287
+00:14:24,020 --> 00:14:26,150
+this stuff together of course the I I
+
+288
+00:14:26,150 --> 00:14:27,860
+understand most of you will be in an IDE
+
+289
+00:14:27,860 --> 00:14:29,990
+and be using maven whatever it'll just
+
+290
+00:14:29,990 --> 00:14:32,030
+take care of all of this for you one of
+
+291
+00:14:32,030 --> 00:14:33,710
+the curses of working on the JDK itself
+
+292
+00:14:33,710 --> 00:14:35,660
+is you're usually ahead of with all the
+
+293
+00:14:35,660 --> 00:14:37,430
+tools supports so you just get used to
+
+294
+00:14:37,430 --> 00:14:38,780
+doing things the hard way on the command
+
+295
+00:14:38,780 --> 00:14:39,010
+line
+
+296
+00:14:39,010 --> 00:14:42,670
+with stone knives and bearskins all
+
+297
+00:14:42,670 --> 00:14:44,620
+right so I've got a class's directory
+
+298
+00:14:44,620 --> 00:14:48,280
+here's module in class I can run Java P
+
+299
+00:14:48,280 --> 00:14:49,780
+on it just like any other class file a
+
+300
+00:14:49,780 --> 00:14:52,210
+module a module declaration in module in
+
+301
+00:14:52,210 --> 00:14:54,400
+Java is compiled into a little class
+
+302
+00:14:54,400 --> 00:14:58,090
+file and Java pete l helpfully tells me
+
+303
+00:14:58,090 --> 00:15:00,910
+what is in there now so that's all good
+
+304
+00:15:00,910 --> 00:15:05,910
+I can char it up just like I did before
+
+305
+00:15:05,910 --> 00:15:20,920
+I'll just overwrite that I'll be lazy
+
+306
+00:15:20,920 --> 00:15:25,030
+but I'll be confused so what we have
+
+307
+00:15:25,030 --> 00:15:26,860
+here is that is it's a it's a jar file
+
+308
+00:15:26,860 --> 00:15:29,590
+but it's now a modular jar file it's got
+
+309
+00:15:29,590 --> 00:15:30,870
+a module in for that class in it
+
+310
+00:15:30,870 --> 00:15:34,420
+otherwise it's it's really just a plain
+
+311
+00:15:34,420 --> 00:15:39,490
+old jar file I can now run this on them
+
+312
+00:15:39,490 --> 00:15:43,270
+on as as a module by telling the Java
+
+313
+00:15:43,270 --> 00:15:45,850
+launcher where the module path is really
+
+314
+00:15:45,850 --> 00:15:47,320
+this isn't the class path it's the
+
+315
+00:15:47,320 --> 00:15:49,210
+module path modules are found on the
+
+316
+00:15:49,210 --> 00:15:55,030
+module path logical path Lib dash m or
+
+317
+00:15:55,030 --> 00:16:03,070
+got open JDK hello and this isn't going
+
+318
+00:16:03,070 --> 00:16:06,100
+to work because that module doesn't have
+
+319
+00:16:06,100 --> 00:16:08,050
+a main class attribute so I have to tell
+
+320
+00:16:08,050 --> 00:16:09,670
+it what the main class is I get to type
+
+321
+00:16:09,670 --> 00:16:16,060
+this one more time and then that'll work
+
+322
+00:16:16,060 --> 00:16:17,920
+so one of the things you can add to a
+
+323
+00:16:17,920 --> 00:16:19,450
+module descriptor after you compile it
+
+324
+00:16:19,450 --> 00:16:24,250
+is a specification of the main class now
+
+325
+00:16:24,250 --> 00:16:26,980
+as a modular jar file if the cool thing
+
+326
+00:16:26,980 --> 00:16:28,510
+about modular jar files is they work on
+
+327
+00:16:28,510 --> 00:16:30,700
+the class path - if you stick out on the
+
+328
+00:16:30,700 --> 00:16:32,410
+class path the module infinite class is
+
+329
+00:16:32,410 --> 00:16:36,750
+merely is just ignored so I can go back
+
+330
+00:16:36,750 --> 00:16:51,340
+to my old
+
+331
+00:16:51,340 --> 00:16:53,770
+my free is a freebie exhibit reap is
+
+332
+00:16:53,770 --> 00:16:55,570
+exampling it take the same jar file just
+
+333
+00:16:55,570 --> 00:16:57,400
+stick it on the classpath and it works
+
+334
+00:16:57,400 --> 00:16:59,080
+there too so if you needed to if you
+
+335
+00:16:59,080 --> 00:17:01,690
+need to construct a library say that can
+
+336
+00:17:01,690 --> 00:17:03,100
+be used on both the module path in a
+
+337
+00:17:03,100 --> 00:17:05,620
+class pack you can do that and if you
+
+338
+00:17:05,620 --> 00:17:06,939
+take a little bit of care and for
+
+339
+00:17:06,939 --> 00:17:09,670
+example compile all of the all the
+
+340
+00:17:09,670 --> 00:17:11,829
+classes except module info for an
+
+341
+00:17:11,829 --> 00:17:14,439
+earlier release of the platform then
+
+342
+00:17:14,439 --> 00:17:16,510
+that that that jar file can be used
+
+343
+00:17:16,510 --> 00:17:19,600
+unchanged even on you know JDK 8 or JDK
+
+344
+00:17:19,600 --> 00:17:21,280
+7 if you go that part the module info
+
+345
+00:17:21,280 --> 00:17:23,319
+class file would just be ignored so this
+
+346
+00:17:23,319 --> 00:17:27,699
+is a useful tool for migration so to
+
+347
+00:17:27,699 --> 00:17:38,980
+simplify life a little bit I'm going to
+
+348
+00:17:38,980 --> 00:17:42,280
+specify a main class when I make my jar
+
+349
+00:17:42,280 --> 00:17:55,300
+file and now when I run it here I don't
+
+350
+00:17:55,300 --> 00:18:01,120
+need to specify the main class okay so
+
+351
+00:18:01,120 --> 00:18:02,440
+I've got this trivial a trivial
+
+352
+00:18:02,440 --> 00:18:04,510
+application packaged up as a module not
+
+353
+00:18:04,510 --> 00:18:06,429
+very interesting because well it is a
+
+354
+00:18:06,429 --> 00:18:08,320
+set of packages it's said one package is
+
+355
+00:18:08,320 --> 00:18:10,660
+not really designed for use because it's
+
+356
+00:18:10,660 --> 00:18:14,950
+an application so let's engage in a
+
+357
+00:18:14,950 --> 00:18:16,720
+powerful refactoring operation we're
+
+358
+00:18:16,720 --> 00:18:17,920
+gonna take one module and split it into
+
+359
+00:18:17,920 --> 00:18:23,410
+two to do that there's my source tree as
+
+360
+00:18:23,410 --> 00:18:26,140
+it stands I need to I need to need to
+
+361
+00:18:26,140 --> 00:18:27,429
+transform the source tree so that
+
+362
+00:18:27,429 --> 00:18:30,220
+there's another level of directories so
+
+363
+00:18:30,220 --> 00:18:31,690
+there's a directory now it's going to be
+
+364
+00:18:31,690 --> 00:18:33,940
+a directory for each module that I'm
+
+365
+00:18:33,940 --> 00:18:38,220
+playing with so I'll move source over to
+
+366
+00:18:38,220 --> 00:18:43,540
+or open JDK hello make myself a new
+
+367
+00:18:43,540 --> 00:18:47,260
+source directory and I'll move forward
+
+368
+00:18:47,260 --> 00:18:50,530
+or cope with jdk hello in there now I'm
+
+369
+00:18:50,530 --> 00:18:53,020
+all set up the better structure and I
+
+370
+00:18:53,020 --> 00:18:55,660
+can now make a make another module next
+
+371
+00:18:55,660 --> 00:18:57,280
+to it that's going to contain part of
+
+372
+00:18:57,280 --> 00:19:03,580
+the original content okay so
+
+373
+00:19:03,580 --> 00:19:14,860
+I mean you get rid of that and back to
+
+374
+00:19:14,860 --> 00:19:17,379
+the main main thing here okay so what I
+
+375
+00:19:17,379 --> 00:19:19,720
+want to do you know you know be you know
+
+376
+00:19:19,720 --> 00:19:22,989
+inspired by by by JavaScript is I'm
+
+377
+00:19:22,989 --> 00:19:24,970
+gonna make left pad basically into it
+
+378
+00:19:24,970 --> 00:19:26,980
+into its own module because left pad is
+
+379
+00:19:26,980 --> 00:19:28,989
+obviously something that's difficult to
+
+380
+00:19:28,989 --> 00:19:30,190
+write and you should have a reusable
+
+381
+00:19:30,190 --> 00:19:33,429
+version of it so I'm gonna make another
+
+382
+00:19:33,429 --> 00:19:40,619
+module nearby called org open JDK text
+
+383
+00:19:40,619 --> 00:19:47,710
+and let's go into org slash open text
+
+384
+00:19:47,710 --> 00:19:51,759
+patter Java okay so we're gonna dump a
+
+385
+00:19:51,759 --> 00:20:09,560
+bunch of code in here
+
+386
+00:20:09,560 --> 00:20:11,660
+so we're taking take this private method
+
+387
+00:20:11,660 --> 00:20:22,220
+here and make it into an API okay
+
+388
+00:20:22,220 --> 00:20:25,460
+there's our patter class a nice static
+
+389
+00:20:25,460 --> 00:20:30,770
+method let's change the code in main to
+
+390
+00:20:30,770 --> 00:20:32,810
+use that doesn't get done anymore we
+
+391
+00:20:32,810 --> 00:20:40,120
+need to import or go up and JDK text and
+
+392
+00:20:40,120 --> 00:20:44,150
+here we need to run powder dot left pad
+
+393
+00:20:44,150 --> 00:20:47,870
+mmm okay so that's that should be all
+
+394
+00:20:47,870 --> 00:20:53,420
+good as far as the executable go code
+
+395
+00:20:53,420 --> 00:20:55,250
+goes but now we need to mean you need to
+
+396
+00:20:55,250 --> 00:20:56,810
+fix up our module declaration so
+
+397
+00:20:56,810 --> 00:20:58,670
+actually we need to write one so let's
+
+398
+00:20:58,670 --> 00:21:00,830
+go over back over here write a module
+
+399
+00:21:00,830 --> 00:21:07,520
+info for this new text module so its
+
+400
+00:21:07,520 --> 00:21:14,560
+name we know that is org open JDK text
+
+401
+00:21:14,560 --> 00:21:17,960
+now this module is a set of packages
+
+402
+00:21:17,960 --> 00:21:20,540
+designed for reuse so we need to export
+
+403
+00:21:20,540 --> 00:21:23,960
+it's one package which has a powerfully
+
+404
+00:21:23,960 --> 00:21:32,240
+sophisticated powder API in it and then
+
+405
+00:21:32,240 --> 00:21:35,120
+correspondingly over in the word open
+
+406
+00:21:35,120 --> 00:21:38,360
+JDK text module we need to change its
+
+407
+00:21:38,360 --> 00:21:45,290
+module info lip open hello package yep
+
+408
+00:21:45,290 --> 00:21:50,230
+there we go we now did the save requires
+
+409
+00:21:50,230 --> 00:21:52,160
+sorry I'm getting these all mixed up
+
+410
+00:21:52,160 --> 00:21:58,960
+alright okay text module on the bottom
+
+411
+00:21:58,960 --> 00:22:01,910
+hello hello module on the top this guy
+
+412
+00:22:01,910 --> 00:22:09,110
+needs to require org open JDK text so
+
+413
+00:22:09,110 --> 00:22:10,670
+this is the the kind of fundamental
+
+414
+00:22:10,670 --> 00:22:12,320
+pairing if there's one lesson about
+
+415
+00:22:12,320 --> 00:22:15,830
+modules to take away its the modules are
+
+416
+00:22:15,830 --> 00:22:19,280
+related but in in two fashions
+
+417
+00:22:19,280 --> 00:22:22,490
+one is by requires that's what gets you
+
+418
+00:22:22,490 --> 00:22:23,960
+reliable configure
+
+419
+00:22:23,960 --> 00:22:26,360
+and reliable dependencies and the other
+
+420
+00:22:26,360 --> 00:22:30,190
+way is by exports and export is what
+
+421
+00:22:30,190 --> 00:22:32,780
+defines what is strongly encapsulated in
+
+422
+00:22:32,780 --> 00:22:34,670
+what is not strongly encapsulated if a
+
+423
+00:22:34,670 --> 00:22:37,970
+package is exported then its types are
+
+424
+00:22:37,970 --> 00:22:40,970
+available to a module that requires the
+
+425
+00:22:40,970 --> 00:22:44,540
+enclosing module and we'll see some
+
+426
+00:22:44,540 --> 00:22:47,630
+further examples of this later on ok so
+
+427
+00:22:47,630 --> 00:22:49,400
+I've got my module declarations I've
+
+428
+00:22:49,400 --> 00:22:51,590
+refactor the code we've now that we've
+
+429
+00:22:51,590 --> 00:22:55,100
+now got two modules in our little source
+
+430
+00:22:55,100 --> 00:22:59,210
+tree here let's compile them up and see
+
+431
+00:22:59,210 --> 00:23:00,770
+if we can make this make this thing run
+
+432
+00:23:00,770 --> 00:23:02,660
+so I mean these little shortcut command
+
+433
+00:23:02,660 --> 00:23:04,010
+here just to save some time it's a
+
+434
+00:23:04,010 --> 00:23:06,740
+little shell script that combines Java C
+
+435
+00:23:06,740 --> 00:23:08,840
+and jar so we don't have to spend all
+
+436
+00:23:08,840 --> 00:23:14,740
+day typing all of this stuff
+
+437
+00:23:14,740 --> 00:23:22,280
+so we'll compile the text module dear
+
+438
+00:23:22,280 --> 00:23:26,720
+you think I could type that by now after
+
+439
+00:23:26,720 --> 00:23:30,830
+all these years maybe if I had a proper
+
+440
+00:23:30,830 --> 00:23:36,500
+IDE okay I'm gonna just remove that old
+
+441
+00:23:36,500 --> 00:23:38,570
+one so we've got that we've got our
+
+442
+00:23:38,570 --> 00:23:41,560
+modular jar file for the text module
+
+443
+00:23:41,560 --> 00:23:47,120
+let's compile the Hello module and this
+
+444
+00:23:47,120 --> 00:23:48,740
+fails it says module not found to work
+
+445
+00:23:48,740 --> 00:23:51,290
+open JDK text why is that well because I
+
+446
+00:23:51,290 --> 00:23:53,450
+need to tell the compiler where to find
+
+447
+00:23:53,450 --> 00:23:55,400
+the modules that are gonna be needed so
+
+448
+00:23:55,400 --> 00:23:59,120
+I need to use module path here as well
+
+449
+00:23:59,120 --> 00:24:07,790
+oh now what's going on Oh am I cannot
+
+450
+00:24:07,790 --> 00:24:10,310
+find symbol or go to open JDK dot txt
+
+451
+00:24:10,310 --> 00:24:23,039
+class text and package org up in JDK
+
+452
+00:24:23,039 --> 00:24:30,820
+very good
+
+453
+00:24:30,820 --> 00:24:34,430
+all right so we've got to two little
+
+454
+00:24:34,430 --> 00:24:38,120
+modular jar files now I can run this
+
+455
+00:24:38,120 --> 00:24:42,800
+application Java module path Lib run the
+
+456
+00:24:42,800 --> 00:24:55,370
+module org open JDK hello and oh dear
+
+457
+00:24:55,370 --> 00:24:57,440
+now this will be main class thing let me
+
+458
+00:24:57,440 --> 00:25:10,809
+build this again
+
+459
+00:25:10,809 --> 00:25:16,190
+there we go so at runtime the the module
+
+460
+00:25:16,190 --> 00:25:18,710
+system it finds org open JDK hello it
+
+461
+00:25:18,710 --> 00:25:21,409
+sees at org open JDK hello requires org
+
+462
+00:25:21,409 --> 00:25:23,690
+open JDK text so loads that module up to
+
+463
+00:25:23,690 --> 00:25:25,729
+it connects them together it interprets
+
+464
+00:25:25,729 --> 00:25:27,830
+the require interprets the exports to
+
+465
+00:25:27,830 --> 00:25:30,769
+set up the access control and all all is
+
+466
+00:25:30,769 --> 00:25:32,659
+good and we get to write our little
+
+467
+00:25:32,659 --> 00:25:42,320
+hello Chile world message so reliable
+
+468
+00:25:42,320 --> 00:25:44,690
+configuration and and strong
+
+469
+00:25:44,690 --> 00:25:46,639
+encapsulation how how else do they show
+
+470
+00:25:46,639 --> 00:25:49,639
+up in practice let's look at a couple it
+
+471
+00:25:49,639 --> 00:25:57,139
+a few failure cases so what here's my
+
+472
+00:25:57,139 --> 00:26:01,479
+Lib directory I'm just gonna go remove
+
+473
+00:26:01,479 --> 00:26:05,929
+the ticket the text module and if I try
+
+474
+00:26:05,929 --> 00:26:08,840
+to run this again what's gonna happen is
+
+475
+00:26:08,840 --> 00:26:10,909
+it gonna work well no of course it's not
+
+476
+00:26:10,909 --> 00:26:11,479
+gonna work
+
+477
+00:26:11,479 --> 00:26:13,999
+but module or go up and JDK text not
+
+478
+00:26:13,999 --> 00:26:17,710
+found required by org open JDK hello
+
+479
+00:26:17,710 --> 00:26:19,700
+would it will it work if I try to
+
+480
+00:26:19,700 --> 00:26:26,119
+recompile the hello module well no it
+
+481
+00:26:26,119 --> 00:26:28,369
+won't because that's just not there and
+
+482
+00:26:28,369 --> 00:26:30,559
+exactly related to what we what we saw
+
+483
+00:26:30,559 --> 00:26:34,399
+earlier module not found work open JDK
+
+484
+00:26:34,399 --> 00:26:36,559
+text so another theme of the module
+
+485
+00:26:36,559 --> 00:26:40,129
+system is fidelity at both compile-time
+
+486
+00:26:40,129 --> 00:26:43,729
+and run-time as much as possible the the
+
+487
+00:26:43,729 --> 00:26:46,249
+the operation of the module system is
+
+488
+00:26:46,249 --> 00:26:49,489
+identical in both phases and that's with
+
+489
+00:26:49,489 --> 00:26:51,409
+regard to both reliable configuration
+
+490
+00:26:51,409 --> 00:26:52,909
+and strong encapsulation and we've gone
+
+491
+00:26:52,909 --> 00:26:54,499
+to some lengths to make the error
+
+492
+00:26:54,499 --> 00:26:57,139
+messages is for as informative as we can
+
+493
+00:26:57,139 --> 00:26:58,789
+so that you can figure out what has gone
+
+494
+00:26:58,789 --> 00:27:02,919
+wrong and fix it when that happens
+
+495
+00:27:02,919 --> 00:27:10,940
+okay let me
+
+496
+00:27:10,940 --> 00:27:13,470
+we make the text module just so we have
+
+497
+00:27:13,470 --> 00:27:18,180
+a complete working system again alright
+
+498
+00:27:18,180 --> 00:27:23,820
+so here's another type of failure what
+
+499
+00:27:23,820 --> 00:27:28,710
+it what if I forgot this i forgot to say
+
+500
+00:27:28,710 --> 00:27:33,720
+requires and i'll try to compile this
+
+501
+00:27:33,720 --> 00:27:38,850
+again well again it does not exist
+
+502
+00:27:38,850 --> 00:27:44,640
+packet is that the one and what I
+
+503
+00:27:44,640 --> 00:27:54,970
+expected to see yes
+
+504
+00:27:54,970 --> 00:27:58,669
+mm right so the model right is an
+
+505
+00:27:58,669 --> 00:28:00,559
+example of a message so sophisticated I
+
+506
+00:28:00,559 --> 00:28:04,009
+have to read it twice so Orica openjdk
+
+507
+00:28:04,009 --> 00:28:06,230
+text is is not visible it's a is is not
+
+508
+00:28:06,230 --> 00:28:08,179
+accessible and then the compiler
+
+509
+00:28:08,179 --> 00:28:11,779
+explains well I see that you've got the
+
+510
+00:28:11,779 --> 00:28:14,059
+org openjdk text package
+
+511
+00:28:14,059 --> 00:28:16,940
+in the orange 80k text module that you
+
+512
+00:28:16,940 --> 00:28:19,549
+put on the module path but you didn't
+
+513
+00:28:19,549 --> 00:28:20,240
+say that
+
+514
+00:28:20,240 --> 00:28:23,330
+or open JDK hello requires it therefore
+
+515
+00:28:23,330 --> 00:28:25,370
+it wasn't set up to read it which is the
+
+516
+00:28:25,370 --> 00:28:27,980
+technical term that requires winds up
+
+517
+00:28:27,980 --> 00:28:32,899
+winds up enforcing so let's put that
+
+518
+00:28:32,899 --> 00:28:39,950
+back all right we compiled that
+
+519
+00:28:39,950 --> 00:28:42,950
+everything is good here's another thing
+
+520
+00:28:42,950 --> 00:28:46,279
+that you might wonder about or you might
+
+521
+00:28:46,279 --> 00:28:51,320
+not I said earlier that cyclic
+
+522
+00:28:51,320 --> 00:28:53,450
+dependences are you know that the the
+
+523
+00:28:53,450 --> 00:28:55,129
+module graph for the jdk itself has no
+
+524
+00:28:55,129 --> 00:28:56,840
+cyclic dependences and in fact we forbid
+
+525
+00:28:56,840 --> 00:29:03,350
+them because they are they do lead to
+
+526
+00:29:03,350 --> 00:29:04,789
+code that's difficult to make them to
+
+527
+00:29:04,789 --> 00:29:07,610
+understand difficult to maintain and the
+
+528
+00:29:07,610 --> 00:29:09,649
+module system detects this so here I'm
+
+529
+00:29:09,649 --> 00:29:11,480
+putting in the in this other gratuitous
+
+530
+00:29:11,480 --> 00:29:13,009
+required so each one of these modules
+
+531
+00:29:13,009 --> 00:29:18,190
+now requires the other and I go to
+
+532
+00:29:18,190 --> 00:29:27,429
+recompile to recompile the text module
+
+533
+00:29:27,429 --> 00:29:30,139
+module I found or open or go up and JDK
+
+534
+00:29:30,139 --> 00:29:32,029
+hello because well I didn't give it the
+
+535
+00:29:32,029 --> 00:29:36,889
+module path and now it will say error
+
+536
+00:29:36,889 --> 00:29:39,529
+cyclic dependence involving org open JDK
+
+537
+00:29:39,529 --> 00:29:43,070
+hello so yes a cyclic cyclic dependences
+
+538
+00:29:43,070 --> 00:29:46,039
+are bad news the module system for visit
+
+539
+00:29:46,039 --> 00:29:47,750
+that's actually not quite true at
+
+540
+00:29:47,750 --> 00:29:50,389
+runtime if you really really need to you
+
+541
+00:29:50,389 --> 00:29:52,700
+can use the reflection API to set up
+
+542
+00:29:52,700 --> 00:29:55,580
+what you could to set up cyclic read
+
+543
+00:29:55,580 --> 00:29:58,429
+relationships but it's basically you
+
+544
+00:29:58,429 --> 00:29:59,720
+know something that's reserved as a
+
+545
+00:29:59,720 --> 00:30:02,149
+workaround or for sophisticated
+
+546
+00:30:02,149 --> 00:30:05,480
+libraries such as reflective frameworks
+
+547
+00:30:05,480 --> 00:30:13,840
+to use so we'll take that back out and
+
+548
+00:30:13,840 --> 00:30:16,790
+then a final thing about this is well
+
+549
+00:30:16,790 --> 00:30:21,530
+what if I forget this exports what if
+
+550
+00:30:21,530 --> 00:30:23,780
+we're go from JD cake to K text doesn't
+
+551
+00:30:23,780 --> 00:30:27,410
+actually export that well recompile it
+
+552
+00:30:27,410 --> 00:30:29,000
+and I'm forcing it this will recompile
+
+553
+00:30:29,000 --> 00:30:34,070
+just fine but now if I go to run the
+
+554
+00:30:34,070 --> 00:30:38,059
+application then I get this this fairly
+
+555
+00:30:38,059 --> 00:30:39,890
+verbose message but it has a lot of
+
+556
+00:30:39,890 --> 00:30:42,590
+information error in it illegal access
+
+557
+00:30:42,590 --> 00:30:45,500
+error org open JDK hello main in modular
+
+558
+00:30:45,500 --> 00:30:48,260
+origami JDK hello cannot access the
+
+559
+00:30:48,260 --> 00:30:50,690
+powder class in the text module because
+
+560
+00:30:50,690 --> 00:30:53,360
+the text module does not export the text
+
+561
+00:30:53,360 --> 00:30:59,450
+package and as I said earlier we also we
+
+562
+00:30:59,450 --> 00:31:01,520
+have fidelity at compile-time and
+
+563
+00:31:01,520 --> 00:31:05,360
+run-time if I try to compile the Hello
+
+564
+00:31:05,360 --> 00:31:09,740
+module then that also also fails because
+
+565
+00:31:09,740 --> 00:31:12,500
+a similar error error message to what we
+
+566
+00:31:12,500 --> 00:31:15,679
+saw earlier so the this comes it comes
+
+567
+00:31:15,679 --> 00:31:20,090
+back to the point that Alex made with
+
+568
+00:31:20,090 --> 00:31:22,090
+strong encapsulation at the module level
+
+569
+00:31:22,090 --> 00:31:24,890
+public no Matt no longer means public
+
+570
+00:31:24,890 --> 00:31:27,440
+you can write public in front of a type
+
+571
+00:31:27,440 --> 00:31:29,090
+and in front of a class in front of an
+
+572
+00:31:29,090 --> 00:31:31,370
+interface you can have public methods
+
+573
+00:31:31,370 --> 00:31:35,630
+inside it but it will only be usable by
+
+574
+00:31:35,630 --> 00:31:37,400
+code outside of the module that you're
+
+575
+00:31:37,400 --> 00:31:39,620
+in if the module that you're in also
+
+576
+00:31:39,620 --> 00:31:43,040
+exports the containing package so this
+
+577
+00:31:43,040 --> 00:31:45,679
+is this is a big shift in thinking for
+
+578
+00:31:45,679 --> 00:31:48,500
+for 20-some years public mint anybody
+
+579
+00:31:48,500 --> 00:31:49,460
+can use it
+
+580
+00:31:49,460 --> 00:32:01,310
+that is no longer true
+
+581
+00:32:01,310 --> 00:32:05,360
+all right there we are
+
+582
+00:32:05,360 --> 00:32:09,720
+working again okay so let's back up a
+
+583
+00:32:09,720 --> 00:32:14,880
+bit looking at the at the at the module
+
+584
+00:32:14,880 --> 00:32:17,310
+graph again a really powerful thing that
+
+585
+00:32:17,310 --> 00:32:19,310
+the module graph of the modular platform
+
+586
+00:32:19,310 --> 00:32:23,370
+enables is we can now construct custom
+
+587
+00:32:23,370 --> 00:32:26,310
+runtime images that contain only subsets
+
+588
+00:32:26,310 --> 00:32:31,880
+of it if if for example I have a little
+
+589
+00:32:31,880 --> 00:32:34,350
+application that is going to interact
+
+590
+00:32:34,350 --> 00:32:36,540
+with a database it'll require the sequel
+
+591
+00:32:36,540 --> 00:32:39,000
+module battle pool and logging in XML
+
+592
+00:32:39,000 --> 00:32:41,190
+and drop it up base of course and
+
+593
+00:32:41,190 --> 00:32:43,110
+nothing else is needed while I can
+
+594
+00:32:43,110 --> 00:32:44,490
+actually construct a custom runtime
+
+595
+00:32:44,490 --> 00:32:46,800
+system that only contains those modules
+
+596
+00:32:46,800 --> 00:32:49,050
+let me show you an example of how to do
+
+597
+00:32:49,050 --> 00:32:54,330
+this for our little hello world app if I
+
+598
+00:32:54,330 --> 00:32:56,370
+look I've got this environment variable
+
+599
+00:32:56,370 --> 00:32:58,710
+dollar dollar J points to the the JDK
+
+600
+00:32:58,710 --> 00:33:01,620
+build I'm using there's a new directory
+
+601
+00:33:01,620 --> 00:33:06,540
+in a JDK build as of as of JDK 9 called
+
+602
+00:33:06,540 --> 00:33:11,310
+J mods and that has a bunch of files in
+
+603
+00:33:11,310 --> 00:33:14,130
+it and if these names looks look
+
+604
+00:33:14,130 --> 00:33:16,650
+familiar well that's that's good because
+
+605
+00:33:16,650 --> 00:33:18,930
+these are the modules in the platform
+
+606
+00:33:18,930 --> 00:33:21,450
+they're in this new format called J mod
+
+607
+00:33:21,450 --> 00:33:24,480
+which is richer than plain jar files
+
+608
+00:33:24,480 --> 00:33:26,430
+because we needed to be able to convey
+
+609
+00:33:26,430 --> 00:33:28,410
+things for the JDK modules such as
+
+610
+00:33:28,410 --> 00:33:32,270
+native libraries and legal notices and
+
+611
+00:33:32,270 --> 00:33:35,430
+header files and and all the other goop
+
+612
+00:33:35,430 --> 00:33:37,500
+that you tend to find in a big
+
+613
+00:33:37,500 --> 00:33:40,470
+application like the JDK anyway so we've
+
+614
+00:33:40,470 --> 00:33:42,240
+got these J mod files and there's a new
+
+615
+00:33:42,240 --> 00:33:45,740
+tool called J link Java now has a linker
+
+616
+00:33:45,740 --> 00:33:48,060
+just like any other self-respecting
+
+617
+00:33:48,060 --> 00:33:50,280
+software platform you don't have to use
+
+618
+00:33:50,280 --> 00:33:53,340
+it it's optional but you can use it so
+
+619
+00:33:53,340 --> 00:33:55,170
+we've got all these J mod files I'm
+
+620
+00:33:55,170 --> 00:33:59,580
+gonna make a trivial Java Runtime system
+
+621
+00:33:59,580 --> 00:34:02,910
+that only contains the base module so J
+
+622
+00:34:02,910 --> 00:34:04,320
+link I need to tell it where to find the
+
+623
+00:34:04,320 --> 00:34:08,200
+models
+
+624
+00:34:08,200 --> 00:34:12,010
+I need to tell it where to put the
+
+625
+00:34:12,010 --> 00:34:13,659
+resulting runtime system we'll just call
+
+626
+00:34:13,659 --> 00:34:17,829
+it Jerry I need to tell it what to
+
+627
+00:34:17,829 --> 00:34:23,589
+include well we need the base module and
+
+628
+00:34:23,589 --> 00:34:24,960
+it goes off for a while and it thinks
+
+629
+00:34:24,960 --> 00:34:30,820
+and then I've got Jerry it's got a bin
+
+630
+00:34:30,820 --> 00:34:32,560
+directory with the drop a launcher and
+
+631
+00:34:32,560 --> 00:34:36,810
+key tool in it because well key tool I
+
+632
+00:34:36,810 --> 00:34:39,520
+can look at how how large these things
+
+633
+00:34:39,520 --> 00:34:46,240
+are for JDK is 491 megabytes and this
+
+634
+00:34:46,240 --> 00:34:50,379
+little teeny JRE I built is only 44 so
+
+635
+00:34:50,379 --> 00:34:56,800
+that's cool I can ask what models are in
+
+636
+00:34:56,800 --> 00:34:59,230
+it and well it only has the base module
+
+637
+00:34:59,230 --> 00:35:03,130
+which is what we expected but the base
+
+638
+00:35:03,130 --> 00:35:04,660
+module is are all that are trivial
+
+639
+00:35:04,660 --> 00:35:15,450
+little app knees so I can run it jillee
+
+640
+00:35:15,450 --> 00:35:19,150
+and there are there some some interest
+
+641
+00:35:19,150 --> 00:35:24,780
+some useful Diagnostics for example show
+
+642
+00:35:24,780 --> 00:35:28,720
+module resolution this will show the
+
+643
+00:35:28,720 --> 00:35:31,290
+activity of the module systems
+
+644
+00:35:31,290 --> 00:35:33,700
+resolution algorithm as it figures out
+
+645
+00:35:33,700 --> 00:35:38,890
+okay we're starting with the routes is
+
+646
+00:35:38,890 --> 00:35:41,680
+org open JDK hello it sees that org open
+
+647
+00:35:41,680 --> 00:35:45,190
+JDK hello requires or Goma JDK text it
+
+648
+00:35:45,190 --> 00:35:48,430
+gives you the URI of where it found the
+
+649
+00:35:48,430 --> 00:35:50,410
+corresponding jar file and then it ran
+
+650
+00:35:50,410 --> 00:35:52,210
+it and for a more sophisticated at the
+
+651
+00:35:52,210 --> 00:35:54,700
+application you can do you'll get many
+
+652
+00:35:54,700 --> 00:35:57,190
+many lines of output if you use this
+
+653
+00:35:57,190 --> 00:36:01,390
+option so I can I can not only make a
+
+654
+00:36:01,390 --> 00:36:03,250
+custom Jerry for an application but if
+
+655
+00:36:03,250 --> 00:36:06,490
+my application is modular I can J link
+
+656
+00:36:06,490 --> 00:36:09,430
+those modules into the custom runtime
+
+657
+00:36:09,430 --> 00:36:11,380
+system as well let me show you how that
+
+658
+00:36:11,380 --> 00:36:17,890
+works so I'm gonna run J link again
+
+659
+00:36:17,890 --> 00:36:21,220
+I need to tell it where to find the
+
+660
+00:36:21,220 --> 00:36:23,380
+j-mods for the platform itself for the
+
+661
+00:36:23,380 --> 00:36:30,000
+JDK and also my two little modules out
+
+662
+00:36:30,000 --> 00:36:34,780
+up and I've put this into H JRE say I
+
+663
+00:36:34,780 --> 00:36:37,240
+need to tell it what the root module is
+
+664
+00:36:37,240 --> 00:36:41,430
+where to start so I say add modules or
+
+665
+00:36:41,430 --> 00:36:46,870
+open JDK hello and since it's going to
+
+666
+00:36:46,870 --> 00:36:48,400
+make a custom runtime system for me I
+
+667
+00:36:48,400 --> 00:36:50,860
+can ask it to make me a little handy
+
+668
+00:36:50,860 --> 00:36:52,600
+command in the bin directory that will
+
+669
+00:36:52,600 --> 00:37:02,980
+launch my application and just for
+
+670
+00:37:02,980 --> 00:37:04,990
+amusement I will make it even smaller by
+
+671
+00:37:04,990 --> 00:37:06,790
+using a couple of other options j-link
+
+672
+00:37:06,790 --> 00:37:08,590
+has quite a few options in it for
+
+673
+00:37:08,590 --> 00:37:10,150
+customizing its out but I'm going to
+
+674
+00:37:10,150 --> 00:37:13,270
+strip this trip debug info and I'm gonna
+
+675
+00:37:13,270 --> 00:37:16,840
+compress the class files in the module
+
+676
+00:37:16,840 --> 00:37:20,470
+archive and this will go off and do some
+
+677
+00:37:20,470 --> 00:37:22,840
+work takes a little longer because it's
+
+678
+00:37:22,840 --> 00:37:29,500
+doing a bunch of compression and here's
+
+679
+00:37:29,500 --> 00:37:31,330
+my hello world Gerry since it's
+
+680
+00:37:31,330 --> 00:37:32,770
+compressed and doesn't have debug info
+
+681
+00:37:32,770 --> 00:37:34,960
+it's even even smaller than the plain
+
+682
+00:37:34,960 --> 00:37:38,940
+one that just had Java dot base and
+
+683
+00:37:38,940 --> 00:37:48,580
+there's my Hello command there we go all
+
+684
+00:37:48,580 --> 00:37:51,330
+wrapped up in one nice little little
+
+685
+00:37:51,330 --> 00:37:55,390
+Gerry optimized into one little package
+
+686
+00:37:55,390 --> 00:37:57,580
+you can throw this into into a docker
+
+687
+00:37:57,580 --> 00:37:59,560
+file deploy it somewhere you know
+
+688
+00:37:59,560 --> 00:38:00,490
+imagine it's a more sophisticated
+
+689
+00:38:00,490 --> 00:38:03,760
+application of course and your own
+
+690
+00:38:03,760 --> 00:38:05,080
+League and you know that your Dhaka file
+
+691
+00:38:05,080 --> 00:38:07,090
+won't contain core but it won't contain
+
+692
+00:38:07,090 --> 00:38:09,670
+Jack web services because well you don't
+
+693
+00:38:09,670 --> 00:38:12,820
+need them it'll be nice and small all
+
+694
+00:38:12,820 --> 00:38:20,440
+right that is all that i've had i've got
+
+695
+00:38:20,440 --> 00:38:22,750
+prepared for right now there's a ton of
+
+696
+00:38:22,750 --> 00:38:25,270
+information about project jigsaw on our
+
+697
+00:38:25,270 --> 00:38:29,070
+project page on open JDK
+
+698
+00:38:29,070 --> 00:38:31,720
+most of the essential information
+
+699
+00:38:31,720 --> 00:38:34,830
+is in the jep's the jdk enhancement
+
+700
+00:38:34,830 --> 00:38:37,119
+proposals numbered two hundred two
+
+701
+00:38:37,119 --> 00:38:38,530
+hundred one to twenty two sixty two
+
+702
+00:38:38,530 --> 00:38:41,260
+sixty one and two eighty two covers the
+
+703
+00:38:41,260 --> 00:38:44,109
+linker so all of these contain lots of
+
+704
+00:38:44,109 --> 00:38:47,260
+useful information 261 is probably the
+
+705
+00:38:47,260 --> 00:38:49,420
+most important one it explains all of
+
+706
+00:38:49,420 --> 00:38:51,430
+the command-line options and and how the
+
+707
+00:38:51,430 --> 00:38:54,580
+module path works and in in in much more
+
+708
+00:38:54,580 --> 00:38:56,670
+detail than i've been able to show here
+
+709
+00:38:56,670 --> 00:38:59,650
+depth 200 is an overview of the modular
+
+710
+00:38:59,650 --> 00:39:02,859
+jdk itself 220 discusses the way that
+
+711
+00:39:02,859 --> 00:39:05,109
+the the runtime image structure has
+
+712
+00:39:05,109 --> 00:39:07,090
+changed you know our TVR has gone away
+
+713
+00:39:07,090 --> 00:39:10,660
+we've provided better alternatives jep
+
+714
+00:39:10,660 --> 00:39:13,540
+260 is about the encapsulation or in
+
+715
+00:39:13,540 --> 00:39:15,970
+many cases non encapsulation for the
+
+716
+00:39:15,970 --> 00:39:23,020
+moments of internal api's of course you
+
+717
+00:39:23,020 --> 00:39:28,090
+can get JDK 9 now at this URL don't
+
+718
+00:39:28,090 --> 00:39:31,090
+believe the word I've said and we have
+
+719
+00:39:31,090 --> 00:39:35,170
+11 minutes left for questions questions
+
+720
+00:39:35,170 --> 00:39:39,330
+applause ah thank you
+
+721
+00:39:39,330 --> 00:39:41,530
+do we have microphones up there are
+
+722
+00:39:41,530 --> 00:39:44,830
+microphones there and there so if you'd
+
+723
+00:39:44,830 --> 00:39:46,270
+use those though that would be great
+
+724
+00:39:46,270 --> 00:39:47,770
+otherwise you have to trust me to repeat
+
+725
+00:39:47,770 --> 00:39:52,920
+your question then I might get it wrong
+
+726
+00:39:52,920 --> 00:40:01,390
+yes sir oh no well Ben cat was wrong
+
+727
+00:40:01,390 --> 00:40:07,180
+oh no wait think it's never wrong do we
+
+728
+00:40:07,180 --> 00:40:20,970
+have a hand mic we could give him
+
+729
+00:40:20,970 --> 00:40:25,720
+so when Vanguard it is talk um Java nine
+
+730
+00:40:25,720 --> 00:40:28,059
+he also did the module search and he
+
+731
+00:40:28,059 --> 00:40:30,730
+came up with ninety five modules he did
+
+732
+00:40:30,730 --> 00:40:34,029
+you're right I can do that too yeah
+
+733
+00:40:34,029 --> 00:40:35,470
+where's the difference where's the
+
+734
+00:40:35,470 --> 00:40:37,329
+difference so the difference it all
+
+735
+00:40:37,329 --> 00:40:42,430
+rests in what you're running so this is
+
+736
+00:40:42,430 --> 00:40:44,680
+an open JDK build that I built on on
+
+737
+00:40:44,680 --> 00:40:55,420
+this machine and as we saw it's got 75
+
+738
+00:40:55,420 --> 00:40:59,410
+so what venkat was using I'll hazard a
+
+739
+00:40:59,410 --> 00:41:01,630
+guess was an Oracle JDK build and
+
+740
+00:41:01,630 --> 00:41:03,730
+remember if you're at the keynote this
+
+741
+00:41:03,730 --> 00:41:05,799
+morning if there's difference between an
+
+742
+00:41:05,799 --> 00:41:07,720
+open JDK build and Oracle JDK build
+
+743
+00:41:07,720 --> 00:41:09,760
+because Oracle JDK has a bunch of
+
+744
+00:41:09,760 --> 00:41:11,559
+commercial features in it and some other
+
+745
+00:41:11,559 --> 00:41:14,410
+stuff and so it's bigger and say I can
+
+746
+00:41:14,410 --> 00:41:16,750
+hire you know funny you should mention I
+
+747
+00:41:16,750 --> 00:41:18,130
+actually happen to have an Oracle JDK
+
+748
+00:41:18,130 --> 00:41:28,240
+built here here's the latest ten
+
+749
+00:41:28,240 --> 00:41:30,849
+published early access Oracle JDK build
+
+750
+00:41:30,849 --> 00:41:37,450
+oh it's 97 he said 95 hmm don't know
+
+751
+00:41:37,450 --> 00:41:38,680
+don't know where he got that number
+
+752
+00:41:38,680 --> 00:41:48,440
+oh well maybe yes he was running nine
+
+753
+00:41:48,440 --> 00:41:54,529
+I'm gonna get to the bottom of this I
+
+754
+00:41:54,529 --> 00:42:00,299
+don't know okay here my guess is Venkat
+
+755
+00:42:00,299 --> 00:42:06,480
+was running a stale JDK nine Oracle JDK
+
+756
+00:42:06,480 --> 00:42:11,279
+early access from early summer or late
+
+757
+00:42:11,279 --> 00:42:13,950
+spring or something like that okay quick
+
+758
+00:42:13,950 --> 00:42:16,650
+somebody tweeted out find out good
+
+759
+00:42:16,650 --> 00:42:22,460
+question though sharp eyes
+
+760
+00:42:22,460 --> 00:42:31,049
+anybody else holding any faster is class
+
+761
+00:42:31,049 --> 00:42:32,130
+loading any faster
+
+762
+00:42:32,130 --> 00:42:34,170
+yes class loading is faster why is class
+
+763
+00:42:34,170 --> 00:42:35,400
+loading faster because we're not doing
+
+764
+00:42:35,400 --> 00:42:37,019
+this stupid linear search of the class
+
+765
+00:42:37,019 --> 00:42:50,910
+path which if you write if you generate
+
+766
+00:42:50,910 --> 00:42:52,499
+by cut on-the-fly where does it wind up
+
+767
+00:42:52,499 --> 00:42:54,779
+it usually winds up in the very module
+
+768
+00:42:54,779 --> 00:42:56,759
+that you're already in but if you need
+
+769
+00:42:56,759 --> 00:42:58,650
+it to be in some other module you can
+
+770
+00:42:58,650 --> 00:42:59,549
+arrange for that too
+
+771
+00:42:59,549 --> 00:43:01,859
+so yeah bytecode on the fly all of that
+
+772
+00:43:01,859 --> 00:43:06,150
+stuff still still works any other
+
+773
+00:43:06,150 --> 00:43:10,890
+questions you don't ask a question the
+
+774
+00:43:10,890 --> 00:43:13,099
+question will be provided for you I
+
+775
+00:43:13,099 --> 00:43:17,239
+haven't heard the most popular one yet
+
+776
+00:43:17,239 --> 00:43:20,309
+this is spooky the camera just follows
+
+777
+00:43:20,309 --> 00:43:24,749
+you do you support the versioning of
+
+778
+00:43:24,749 --> 00:43:28,259
+thank you the winner is we have a winner
+
+779
+00:43:28,259 --> 00:43:30,239
+do we support versioning of modules no
+
+780
+00:43:30,239 --> 00:43:34,950
+we don't and and and why do we not do
+
+781
+00:43:34,950 --> 00:43:39,569
+that because well the the the short the
+
+782
+00:43:39,569 --> 00:43:42,749
+short snappy answer is because maven and
+
+783
+00:43:42,749 --> 00:43:45,739
+maven an IV and Gradle already do that
+
+784
+00:43:45,739 --> 00:43:50,700
+so we don't do it there they're a bunch
+
+785
+00:43:50,700 --> 00:43:52,319
+of more sophisticated answers I mean a
+
+786
+00:43:52,319 --> 00:43:54,839
+sort of more sophisticated language
+
+787
+00:43:54,839 --> 00:43:58,440
+designer II answer as well modules are
+
+788
+00:43:58,440 --> 00:43:59,190
+do
+
+789
+00:43:59,190 --> 00:44:00,750
+for a thing than the artifacts that
+
+790
+00:44:00,750 --> 00:44:04,410
+define them right there's a de suite we
+
+791
+00:44:04,410 --> 00:44:06,839
+make a clear distinction between a class
+
+792
+00:44:06,839 --> 00:44:09,839
+as this sort of you know platonic thing
+
+793
+00:44:09,839 --> 00:44:13,109
+in your program versus the Java source
+
+794
+00:44:13,109 --> 00:44:16,200
+file but that defines a pre compiled
+
+795
+00:44:16,200 --> 00:44:17,819
+time and the Java class file that
+
+796
+00:44:17,819 --> 00:44:20,099
+defines it after compiled time right
+
+797
+00:44:20,099 --> 00:44:22,109
+they're different things so a module is
+
+798
+00:44:22,109 --> 00:44:25,530
+is is like a class it has some you know
+
+799
+00:44:25,530 --> 00:44:28,890
+some higher plane of existence it's
+
+800
+00:44:28,890 --> 00:44:32,119
+defined by a jar file or a J mod file
+
+801
+00:44:32,119 --> 00:44:35,040
+versions belong on artifacts versions
+
+802
+00:44:35,040 --> 00:44:37,589
+don't belong on modules we don't version
+
+803
+00:44:37,589 --> 00:44:40,380
+classes we don't version packages we
+
+804
+00:44:40,380 --> 00:44:42,810
+version jar files and so continuing
+
+805
+00:44:42,810 --> 00:44:45,240
+diversion jar files from a sort of
+
+806
+00:44:45,240 --> 00:44:47,609
+philosophical standpoint is what makes
+
+807
+00:44:47,609 --> 00:44:50,130
+the most sense from a purely pragmatic
+
+808
+00:44:50,130 --> 00:44:53,849
+standpoint we actually did in a very
+
+809
+00:44:53,849 --> 00:44:55,740
+very early jigsaw prototype we actually
+
+810
+00:44:55,740 --> 00:44:57,420
+did have versions and version
+
+811
+00:44:57,420 --> 00:45:00,810
+constraints and we realized fairly
+
+812
+00:45:00,810 --> 00:45:03,119
+quickly you know we're solving the same
+
+813
+00:45:03,119 --> 00:45:05,609
+problem that maven IV & Gradle already
+
+814
+00:45:05,609 --> 00:45:08,760
+solved they all solved the problem in
+
+815
+00:45:08,760 --> 00:45:12,240
+somewhat different ways so no matter no
+
+816
+00:45:12,240 --> 00:45:14,670
+matter what we do it's not going to work
+
+817
+00:45:14,670 --> 00:45:16,319
+well with at least two of them and
+
+818
+00:45:16,319 --> 00:45:19,079
+everybody uses those tools and we knew
+
+819
+00:45:19,079 --> 00:45:21,300
+better than to think that we could make
+
+820
+00:45:21,300 --> 00:45:24,359
+everybody use some other tool even if it
+
+821
+00:45:24,359 --> 00:45:27,150
+wasn't some theoretical sense better so
+
+822
+00:45:27,150 --> 00:45:30,030
+we just backed off and said okay no the
+
+823
+00:45:30,030 --> 00:45:32,700
+best approach is to leave leave version
+
+824
+00:45:32,700 --> 00:45:36,329
+selection to the build tools and the
+
+825
+00:45:36,329 --> 00:45:38,609
+configuration of the build tools and
+
+826
+00:45:38,609 --> 00:45:40,079
+when you work with maintainer the build
+
+827
+00:45:40,079 --> 00:45:42,180
+tools to make sure they work well with
+
+828
+00:45:42,180 --> 00:45:44,069
+the module system and I've been your
+
+829
+00:45:44,069 --> 00:45:45,869
+pretty pretty pleased with you know the
+
+830
+00:45:45,869 --> 00:45:47,460
+help we've gotten from folks like like
+
+831
+00:45:47,460 --> 00:45:49,920
+Robert Schulte it works on maven but
+
+832
+00:45:49,920 --> 00:45:51,329
+don't you know don't try to compete with
+
+833
+00:45:51,329 --> 00:45:52,950
+them so that's the sort of practical
+
+834
+00:45:52,950 --> 00:45:55,710
+answer for why we don't do versions well
+
+835
+00:45:55,710 --> 00:45:57,780
+we ever do versions someday mmm no
+
+836
+00:45:57,780 --> 00:45:59,880
+probably not this is a kind of kind of
+
+837
+00:45:59,880 --> 00:46:01,560
+counterintuitive thing at first it's
+
+838
+00:46:01,560 --> 00:46:04,140
+like oh it's a big big hairy problem we
+
+839
+00:46:04,140 --> 00:46:05,970
+don't need to solve cool that's the best
+
+840
+00:46:05,970 --> 00:46:10,230
+kind
+
+841
+00:46:10,230 --> 00:46:11,910
+any questions elsewhere obviously I'm
+
+842
+00:46:11,910 --> 00:46:15,180
+biased towards the lower rows still
+
+843
+00:46:15,180 --> 00:46:19,470
+related to the versioning question if
+
+844
+00:46:19,470 --> 00:46:22,710
+let's say a maven project and we need a
+
+845
+00:46:22,710 --> 00:46:25,410
+certain dependency would we specify the
+
+846
+00:46:25,410 --> 00:46:28,560
+version in the pom file and we will also
+
+847
+00:46:28,560 --> 00:46:32,540
+specify the module name in our requires
+
+848
+00:46:32,540 --> 00:46:38,609
+section of our module yes and it would
+
+849
+00:46:38,609 --> 00:46:41,910
+be maven job to bring that jar
+
+850
+00:46:41,910 --> 00:46:44,460
+it's maven job to bring the jar and it's
+
+851
+00:46:44,460 --> 00:46:47,010
+your IDs job to make sure that the
+
+852
+00:46:47,010 --> 00:46:48,900
+information in your palm and the
+
+853
+00:46:48,900 --> 00:46:50,790
+information in your module info are
+
+854
+00:46:50,790 --> 00:46:54,359
+consistent as indeed both both Eclipse
+
+855
+00:46:54,359 --> 00:46:57,329
+and IntelliJ or are doing or will soon
+
+856
+00:46:57,329 --> 00:47:03,089
+do yeah I realize it does seem a bit
+
+857
+00:47:03,089 --> 00:47:04,890
+redundant it's like Oh module info
+
+858
+00:47:04,890 --> 00:47:07,170
+pom.xml aren't they the same you know
+
+859
+00:47:07,170 --> 00:47:09,150
+couldn't we just have one thing and the
+
+860
+00:47:09,150 --> 00:47:12,300
+answer is that would that would actually
+
+861
+00:47:12,300 --> 00:47:15,650
+be more confusing than it's worth
+
+862
+00:47:15,650 --> 00:47:17,660
+three minutes any other questions
+
+863
+00:47:17,660 --> 00:47:20,369
+questions up at the top there are two
+
+864
+00:47:20,369 --> 00:47:30,060
+mics question down here hello yesterday
+
+865
+00:47:30,060 --> 00:47:32,369
+we've found out that in a previous
+
+866
+00:47:32,369 --> 00:47:36,530
+version to the latest one there were no
+
+867
+00:47:36,530 --> 00:47:40,650
+numbers in the module names why was that
+
+868
+00:47:40,650 --> 00:47:47,359
+and why was it removed after all so
+
+869
+00:47:47,359 --> 00:47:49,859
+numbers are allowed in MA in module
+
+870
+00:47:49,859 --> 00:47:52,829
+names but they're almost always a bad
+
+871
+00:47:52,829 --> 00:47:55,800
+idea so they're allowed in module names
+
+872
+00:47:55,800 --> 00:47:59,430
+because numbers have been used in in the
+
+873
+00:47:59,430 --> 00:48:03,119
+names of a few popular projects you know
+
+874
+00:48:03,119 --> 00:48:05,940
+we a lot of what a lot of the design of
+
+875
+00:48:05,940 --> 00:48:07,859
+the model system we knew it was informed
+
+876
+00:48:07,859 --> 00:48:10,589
+by you know scans of maven central to
+
+877
+00:48:10,589 --> 00:48:12,119
+figure out what kinds of names do people
+
+878
+00:48:12,119 --> 00:48:14,339
+use if we knew what was popular what
+
+879
+00:48:14,339 --> 00:48:16,980
+wasn't what caused trouble but you find
+
+880
+00:48:16,980 --> 00:48:23,930
+things like you know SL f4j okay
+
+881
+00:48:23,930 --> 00:48:26,849
+one of the anti-patterns we really want
+
+882
+00:48:26,849 --> 00:48:30,000
+to discourage is put it as trying to is
+
+883
+00:48:30,000 --> 00:48:32,010
+is thinking that modules should have
+
+884
+00:48:32,010 --> 00:48:33,990
+versions and then putting the version
+
+885
+00:48:33,990 --> 00:48:37,050
+numbers in the module name this would be
+
+886
+00:48:37,050 --> 00:48:41,040
+an extremely bad practice so we thought
+
+887
+00:48:41,040 --> 00:48:42,420
+for a while on this and this was in the
+
+888
+00:48:42,420 --> 00:48:44,089
+jigsaw design for a while okay let's
+
+889
+00:48:44,089 --> 00:48:46,950
+disallow module names that had digits
+
+890
+00:48:46,950 --> 00:48:49,650
+and you know that's that's kind of an
+
+891
+00:48:49,650 --> 00:48:53,819
+ornery rule to have and eventually as SB
+
+892
+00:48:53,819 --> 00:48:55,920
+people we're looking at it and it was
+
+893
+00:48:55,920 --> 00:48:57,390
+becoming more and more widely known
+
+894
+00:48:57,390 --> 00:49:00,450
+people oh yeah that's that's that's kind
+
+895
+00:49:00,450 --> 00:49:02,730
+of to me we get your point but it's too
+
+896
+00:49:02,730 --> 00:49:05,550
+mean so we took that rule out that's why
+
+897
+00:49:05,550 --> 00:49:07,650
+it's no longer there but please please
+
+898
+00:49:07,650 --> 00:49:09,359
+please do not put version numbers in
+
+899
+00:49:09,359 --> 00:49:10,109
+your module names
+
+900
+00:49:10,109 --> 00:49:13,290
+that's just it will lead to tiers one
+
+901
+00:49:13,290 --> 00:49:14,760
+minute left one last question
+
+902
+00:49:14,760 --> 00:49:25,789
+anybody sorry
+
+903
+00:49:25,789 --> 00:49:29,759
+is linking a custom trhe ie now the
+
+904
+00:49:29,759 --> 00:49:31,739
+preferred way and what about security
+
+905
+00:49:31,739 --> 00:49:34,229
+patches when I create a custom greu
+
+906
+00:49:34,229 --> 00:49:38,539
+which is bundled to the application to
+
+907
+00:49:38,539 --> 00:49:41,609
+answer the first question well is making
+
+908
+00:49:41,609 --> 00:49:43,469
+customer Jerry preferred well no it's
+
+909
+00:49:43,469 --> 00:49:45,959
+another option that you have you know
+
+910
+00:49:45,959 --> 00:49:47,759
+you don't need to do it you can run Java
+
+911
+00:49:47,759 --> 00:49:48,930
+from the command line like you always
+
+912
+00:49:48,930 --> 00:49:51,089
+have you can toss wire files into your
+
+913
+00:49:51,089 --> 00:49:52,940
+app server that's running on top of nine
+
+914
+00:49:52,940 --> 00:49:55,469
+you know light like you always have and
+
+915
+00:49:55,469 --> 00:50:02,489
+it'll work second question was what
+
+916
+00:50:02,489 --> 00:50:04,440
+would what about what about security
+
+917
+00:50:04,440 --> 00:50:06,779
+fixes well if you're packaging a JRE
+
+918
+00:50:06,779 --> 00:50:08,519
+with your app you know and people will
+
+919
+00:50:08,519 --> 00:50:09,599
+be there people who've been doing this
+
+920
+00:50:09,599 --> 00:50:12,029
+for years then you are taking on the
+
+921
+00:50:12,029 --> 00:50:13,799
+responsibility to provide updates
+
+922
+00:50:13,799 --> 00:50:16,049
+yourself when security fixes are made
+
+923
+00:50:16,049 --> 00:50:17,369
+available for the Jerry that you're
+
+924
+00:50:17,369 --> 00:50:20,279
+using so that's one of the costs and you
+
+925
+00:50:20,279 --> 00:50:21,390
+can choose to take it or not
+
+926
+00:50:21,390 --> 00:50:24,370
+alright times up thank you very much
+
+927
+00:50:24,370 --> 00:50:26,710
+[Applause]
+
+928
+00:50:26,710 --> 00:50:31,369
+[Music]
+
